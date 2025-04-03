@@ -4,3 +4,4 @@ plugins {
 rootProject.name = "HomeCloudServer"
 include("app")
 include("domain")
+include("data")

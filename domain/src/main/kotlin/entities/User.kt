@@ -1,4 +1,4 @@
-package models
+package entities
 
 data class User(
     val id: String,
