@@ -2,17 +2,20 @@ package com.homecloude.service
 
 import com.homecloude.config.AppConfig
 import io.ktor.utils.io.core.Closeable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.InetAddress
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceInfo
 
-class LocalService(
+class MDNSServiceRegistrar(
     private val appConfig: AppConfig,
-    //private val logger: Logger
+    private val coroutineScope: CoroutineScope
 ) : Closeable {
     private var jmdns: JmDNS? = null
 
-    fun registerService() {
+    fun registerService() = coroutineScope.launch(Dispatchers.IO) {
         try {
             jmdns = JmDNS.create(
                 InetAddress.getByName(appConfig.server.host),
@@ -23,23 +26,26 @@ class LocalService(
                         appConfig.mdns.serviceType,
                         appConfig.mdns.serviceName,
                         appConfig.server.port,
-                        0,
-                        0,
-                        mapOf("version" to "1.0")
+                        appConfig.mdns.weight,
+                        appConfig.mdns.priority,
+                        appConfig.mdns.properties
                     )
                 )
             }
             println("mDNS service registered successfully")
-            //logger.info("mDNS service registered successfully")
         } catch (e: Exception) {
-            //logger.error("mDNS registration failed", e)
             println("mDNS registration failed: ${e.message}")
+            close()
         }
     }
 
     override fun close() {
-        jmdns?.close()
-        println("mDNS service unregistered")
-        //logger.info("mDNS service unregistered")
+        runCatching {
+            jmdns?.unregisterAllServices()
+            jmdns?.close()
+            println("mDNS service unregistered")
+        }.onFailure {
+            println("mDNS error closing")
+        }
     }
 }
