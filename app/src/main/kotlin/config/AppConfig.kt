@@ -1,10 +1,8 @@
 package com.homecloud.app.config
 
-import com.typesafe.config.ConfigFactory
 import io.ktor.server.config.*
 
-class AppConfig {
-    private val config = HoconApplicationConfig(ConfigFactory.load())
+class AppConfig(config: HoconApplicationConfig) {
 
     val server: ServerConfig = ServerConfig(
         port = config.property("app.server.port").getString().toInt(),
