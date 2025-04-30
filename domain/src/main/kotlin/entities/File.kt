@@ -1,7 +1,7 @@
 package entities
 
 data class File(
-    val id: Int,
+    val id: Long,
     val route: String,
     val ownerId: Int,
     val filename: String,
