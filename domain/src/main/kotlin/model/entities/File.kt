@@ -1,4 +1,4 @@
-package entities
+package model.entities
 
 data class File(
     val id: Long,

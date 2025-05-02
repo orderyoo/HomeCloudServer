@@ -1,4 +1,4 @@
-package entities
+package model.entities
 
 data class User(
     val id: Long,
