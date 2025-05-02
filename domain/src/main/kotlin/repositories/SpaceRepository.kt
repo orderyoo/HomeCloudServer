@@ -7,7 +7,7 @@ interface SpaceRepository {
 
     suspend fun update(title: String?, description: String?): Result<Unit>
 
-    suspend fun delete(id: String): Result<Unit>
+    suspend fun delete(id: Long): Result<Unit>
 
     suspend fun findAllByOwnerId(ownerId: Long): Result<List<Space>>
 

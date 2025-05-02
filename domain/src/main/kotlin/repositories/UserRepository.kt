@@ -5,11 +5,11 @@ import entities.User
 interface UserRepository {
     suspend fun create(userName: String, email: String, password: String): Result<Long>
 
-    suspend fun update(userName: String?, password: String?, routeImage: String?): Result<Unit>
+    suspend fun update(id: Long, newName: String?, newPassword: String?, newRouteImage: String?): Result<Unit>
 
-    suspend fun delete(id: Int): Result<Unit>
+    suspend fun delete(id: Long): Result<Unit>
 
-    suspend fun findById(id: Int): Result<User>
+    suspend fun findById(id: Long): Result<User>
 
     suspend fun findByEmail(email: String): Result<User>
 
