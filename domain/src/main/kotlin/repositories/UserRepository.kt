@@ -1,6 +1,6 @@
 package repositories
 
-import entities.User
+import model.entities.User
 
 interface UserRepository {
     suspend fun create(userName: String, email: String, password: String): Result<Long>
@@ -14,4 +14,6 @@ interface UserRepository {
     suspend fun findByEmail(email: String): Result<User>
 
     suspend fun findAllBySpaceId(spaceId: Long): Result<List<User>>
+
+    suspend fun checkRoleInSys(id: Long)
 }
