@@ -4,6 +4,7 @@ import db.tables.Files
 import db.tables.Users
 import db.tables.Spaces
 import db.tables.SpacesUsers
+import db.tables.SystemAdmins
 import db.tables.Tokens
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -18,7 +19,8 @@ object DatabaseFactory {
                 Tokens,
                 Spaces,
                 Files,
-                SpacesUsers
+                SpacesUsers,
+                SystemAdmins
             )
         }
     }
