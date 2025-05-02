@@ -1,9 +1,10 @@
-package usecases
+package usecases.user
 
 import PasswordHasher
 import TokenGenerator
-import entities.Token
-import entities.User
+import model.entities.Token
+import model.entities.User
+import model.input.UserRegistration
 import repositories.TokenRepository
 import repositories.UserRepository
 
@@ -13,24 +14,25 @@ class UserRegisterUseCase(
     private val tokenGenerator: TokenGenerator,
     private val passwordHasher: PasswordHasher
 ) {
-    suspend operator fun invoke(userName: String, email: String, enteredPassword: String): Result<Token> {
-        if (!User.isValidEmail(email))
+    suspend operator fun invoke(user: UserRegistration): Result<Token> {
+        if (!User.isValidEmail(user.email))
             return Result.failure(Throwable("invalid email format"))
 
-        val findingUserResult = userRepository.findByEmail(email)
+        val findingUserResult = userRepository.findByEmail(user.email)
         if (findingUserResult.isSuccess)
             return Result.failure(Throwable("email is already use"))
 
-        val passwordHash = passwordHasher.createHash(enteredPassword)
+        val passwordHash = passwordHasher.createHash(user.password)
 
-        val userCreatedId = userRepository.create(userName, email, passwordHash)
+        val userCreatedId = userRepository.create(user.name, user.email, passwordHash)
         if (userCreatedId.isFailure)
             return Result.failure(Throwable("failed to create a user"))
 
-        val userId = userCreatedId.getOrNull() ?: return Result.failure(Throwable("failed to create a user"))
+        val userId = userCreatedId.getOrNull() ?:
+            return Result.failure(Throwable("failed to create a user"))
 
         val token = tokenGenerator.generate()
-        val tokenSaveResult = tokenRepository.insertAndReturn(userId, token)
+        val tokenSaveResult = tokenRepository.insert(userId, token)
         if (tokenSaveResult.isFailure)
             return Result.failure(Throwable("couldn't link the token"))
 

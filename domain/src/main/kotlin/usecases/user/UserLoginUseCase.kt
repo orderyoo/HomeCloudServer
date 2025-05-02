@@ -1,8 +1,8 @@
-package usecases
+package usecases.user
 
 import PasswordHasher
 import TokenGenerator
-import entities.Token
+import model.entities.Token
 import repositories.TokenRepository
 import repositories.UserRepository
 
@@ -12,8 +12,8 @@ class UserLoginUseCase(
     private val tokenGenerator: TokenGenerator,
     private val passwordHasher: PasswordHasher
 ){
-    suspend operator fun invoke(enteredPassword: String, email: String): Result<Token> {
-        val findingUser = userRepository.findByEmail(email)
+    suspend operator fun invoke(enteredPassword: String, enteredEmail: String): Result<Token> {
+        val findingUser = userRepository.findByEmail(enteredEmail)
         if(findingUser.isFailure)
             return Result.failure(Throwable("user was not found"))
 
@@ -22,7 +22,7 @@ class UserLoginUseCase(
             return Result.failure(Throwable("invalid password"))
 
         val token = tokenGenerator.generate()
-        val tokenSaveResult = tokenRepository.insertAndReturn(findingUser.getOrNull()!!.id, token)
+        val tokenSaveResult = tokenRepository.insert(findingUser.getOrNull()!!.id, token)
         if (tokenSaveResult.isFailure)
             return Result.failure(Throwable("couldn't link the token"))
 
