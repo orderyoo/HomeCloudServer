@@ -3,7 +3,7 @@ package repositories
 import model.entities.Space
 
 interface SpaceRepository {
-    suspend fun create(title: String, description: String?, ownerId: Long): Result<Long>
+    suspend fun insert(title: String, description: String?, ownerId: Long): Result<Long>
 
     suspend fun update(id: Long, title: String?, description: String?): Result<Unit>
 

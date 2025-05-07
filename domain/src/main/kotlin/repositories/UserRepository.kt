@@ -3,7 +3,7 @@ package repositories
 import model.entities.User
 
 interface UserRepository {
-    suspend fun create(userName: String, email: String, password: String): Result<Long>
+    suspend fun insert(userName: String, email: String, password: String): Result<Long>
 
     suspend fun update(id: Long, newName: String?, newPassword: String?, newRouteImage: String?): Result<Unit>
 
@@ -13,7 +13,9 @@ interface UserRepository {
 
     suspend fun findByEmail(email: String): Result<User>
 
-    suspend fun findAllBySpaceId(spaceId: Long): Result<List<User>>
+    suspend fun findBySpaceId(spaceId: Long): Result<List<User>>
 
-    suspend fun checkRoleInSys(id: Long)
+    suspend fun checkRoleInSystem(id: Long): Result<Unit>
+
+    suspend fun setRoleInSystem(): Result<Unit>
 }

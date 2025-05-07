@@ -1,11 +1,9 @@
 package repositories
 
-import model.entities.Token
-
 interface TokenRepository {
-    suspend fun insert(userId: Long, token: String): Result<Token>
+    suspend fun insert(userId: Long, token: String): Result<Unit>
 
-    suspend fun verify(token: String): Result<Long>
+    suspend fun find(token: String): Result<String>
 
     suspend fun delete(token: String): Result<Unit>
 }
