@@ -1,25 +1,25 @@
 package usecases.user
 
-import PasswordHasher
+import utils.HashService
 import model.input.UserUpdate
-import repositories.TokenRepository
+import repositories.ApiKeyRepository
 import repositories.UserRepository
 
 class UserEditUseCase(
     private val userRepository: UserRepository,
-    private val tokenRepository: TokenRepository,
-    private val passwordHasher: PasswordHasher
+    private val apiKeyRepository: ApiKeyRepository,
+    private val passwordHasher: HashService
 ) {
     suspend operator fun invoke(user: UserUpdate, token: String): Result<Unit> {
-        val tokenVerifier = tokenRepository.verify(token)
-        val userId = tokenVerifier.getOrNull() ?:
+        val apiKeyVerifierResult = apiKeyRepository.find(token)
+        val apiKey = apiKeyVerifierResult.getOrNull() ?:
             return Result.failure(Throwable("token is not valid"))
 
         var passwordHash: String? = null
         if (user.password != null)
             passwordHash = passwordHasher.createHash(user.password)
 
-        val userEditResult = userRepository.update(userId, user.name, passwordHash, user.routeImage)
+        val userEditResult = userRepository.update(apiKey.userId, user.name, passwordHash, user.routeImage)
         if (userEditResult.isFailure)
             return Result.failure(Throwable(""))
 
