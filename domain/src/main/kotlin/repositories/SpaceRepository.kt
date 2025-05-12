@@ -9,7 +9,7 @@ interface SpaceRepository {
 
     suspend fun delete(id: Long): Result<Unit>
 
-    suspend fun findAllByOwnerId(ownerId: Long): Result<List<Space>>
+    suspend fun findAllRelated(userId: Long): Result<List<Space>>
 
     suspend fun findById(id: Long): Result<Space>
 }

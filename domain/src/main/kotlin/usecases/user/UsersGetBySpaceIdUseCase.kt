@@ -8,8 +8,8 @@ class UsersGetBySpaceIdUseCase(
     private val userRepository: UserRepository,
     private val apiKeyRepository: ApiKeyRepository
 ) {
-    suspend operator fun invoke(spaceId: Long, token: String): Result<List<User>> {
-        val apiKeyVerifierResult = apiKeyRepository.find(token)
+    suspend operator fun invoke(spaceId: Long, apiKey: String): Result<List<User>> {
+        val apiKeyVerifierResult = apiKeyRepository.find(apiKey)
         if(apiKeyVerifierResult.isFailure)
             return Result.failure(Throwable("token is not valid"))
 

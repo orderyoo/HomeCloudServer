@@ -7,8 +7,8 @@ class UserDeleteUseCase(
     private val userRepository: UserRepository,
     private val apiKeyRepository: ApiKeyRepository
 ) {
-    suspend operator fun invoke(userId: String, token: String): Result<Unit> {
-        val apiKeyVerifier = apiKeyRepository.find(token)
+    suspend operator fun invoke(userId: String, apiKey: String): Result<Unit> {
+        val apiKeyVerifier = apiKeyRepository.find(apiKey)
         val apiKey = apiKeyVerifier.getOrNull() ?:
             return Result.failure(Throwable("token is not valid"))
 

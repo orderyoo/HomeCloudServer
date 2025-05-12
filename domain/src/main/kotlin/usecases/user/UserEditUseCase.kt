@@ -10,8 +10,8 @@ class UserEditUseCase(
     private val apiKeyRepository: ApiKeyRepository,
     private val passwordHasher: HashService
 ) {
-    suspend operator fun invoke(user: UserUpdate, token: String): Result<Unit> {
-        val apiKeyVerifierResult = apiKeyRepository.find(token)
+    suspend operator fun invoke(user: UserUpdate, apiKey: String): Result<Unit> {
+        val apiKeyVerifierResult = apiKeyRepository.find(apiKey)
         val apiKey = apiKeyVerifierResult.getOrNull() ?:
             return Result.failure(Throwable("token is not valid"))
 

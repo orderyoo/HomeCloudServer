@@ -8,8 +8,8 @@ class UserGetByIdUseCase(
     private val userRepository: UserRepository,
     private val apiKeyRepository: ApiKeyRepository
 ) {
-    suspend operator fun invoke(userId: Long, token: String): Result<User> {
-        val apiKeyVerifierResult = apiKeyRepository.find(token)
+    suspend operator fun invoke(userId: Long, apiKey: String): Result<User> {
+        val apiKeyVerifierResult = apiKeyRepository.find(apiKey)
         if(apiKeyVerifierResult.isFailure)
             return Result.failure(Throwable("token is not valid"))
 

@@ -1,15 +1,15 @@
 package usecases.space
 
 import repositories.SpaceRepository
-import repositories.TokenRepository
+import repositories.ApiKeyRepository
 
 class SpaceDeleteUseCase(
     private val spaceRepository: SpaceRepository,
-    private val tokenRepository: TokenRepository
+    private val apiKeyRepository: ApiKeyRepository
 ) {
     suspend operator fun invoke(spaceId: Long, token: String): Result<Unit> {
-        val tokenVerifier = tokenRepository.verify(token)
-        if(tokenVerifier.isFailure)
+        val apiKeyVerifierResult = apiKeyRepository.find(token)
+        if(apiKeyVerifierResult.isFailure)
             return Result.failure(Throwable("token is not valid"))
 
         val spaceDeleteResult = spaceRepository.delete(spaceId)
