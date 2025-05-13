@@ -1,18 +1,11 @@
 package usecases.space
 
+import model.entities.ApiKey
 import model.input.SpaceUpdate
 import repositories.SpaceRepository
-import repositories.ApiKeyRepository
 
-class SpaceEditUseCase(
-    private val spaceRepository: SpaceRepository,
-    private val apiKeyRepository: ApiKeyRepository
-) {
-    suspend operator fun invoke(space: SpaceUpdate, token: String): Result<Unit> {
-        val apiKeyVerifierResult = apiKeyRepository.find(token)
-        if(apiKeyVerifierResult.isFailure)
-            return Result.failure(Throwable("token is not valid"))
-
+class SpaceEditUseCase(private val spaceRepository: SpaceRepository) {
+    suspend operator fun invoke(apiKey: ApiKey, space: SpaceUpdate): Result<Unit> {
         val spaceEditResult = spaceRepository.update(space.id, space.title, space.description)
         if (spaceEditResult.isFailure)
             return Result.failure(Throwable(""))

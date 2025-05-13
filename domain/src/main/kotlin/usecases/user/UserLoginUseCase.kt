@@ -20,7 +20,7 @@ class UserLoginUseCase(
             return Result.failure(Exception("Incorrect password"))
 
         val apiKey = apiKeyRepository.generate(user.id)
-        val apiKeySaveResult = apiKeyRepository.insert(user.id, apiKey)
+        val apiKeySaveResult = apiKeyRepository.insert(apiKey)
         if (apiKeySaveResult.isFailure)
             return Result.failure(Throwable("couldn't link the token"))
 

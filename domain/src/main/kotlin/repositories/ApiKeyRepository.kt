@@ -5,7 +5,7 @@ import model.entities.ApiKey
 interface ApiKeyRepository {
     suspend fun generate(userId: Long): ApiKey
 
-    suspend fun insert(userId: Long, apiKey: ApiKey): Result<Unit>
+    suspend fun insert(apiKey: ApiKey): Result<Unit>
 
     suspend fun find(apiKey: String): Result<ApiKey>
 

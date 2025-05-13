@@ -1,17 +1,10 @@
 package usecases.user
 
-import repositories.ApiKeyRepository
+import model.entities.ApiKey
 import repositories.UserRepository
 
-class UserDeleteUseCase(
-    private val userRepository: UserRepository,
-    private val apiKeyRepository: ApiKeyRepository
-) {
-    suspend operator fun invoke(userId: String, apiKey: String): Result<Unit> {
-        val apiKeyVerifier = apiKeyRepository.find(apiKey)
-        val apiKey = apiKeyVerifier.getOrNull() ?:
-            return Result.failure(Throwable("token is not valid"))
-
+class UserDeleteUseCase(private val userRepository: UserRepository) {
+    suspend operator fun invoke(apiKey: ApiKey, userId: String): Result<Unit> {
         val userDeletedResult = userRepository.delete(apiKey.userId)
         if(userDeletedResult.isFailure)
             return Result.failure(Throwable("failed to delete user"))

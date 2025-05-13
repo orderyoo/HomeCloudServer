@@ -27,7 +27,7 @@ class UserRegisterUseCase(
             return Result.failure(Throwable("failed to create a user"))
 
         val apiKey = apiKeyRepository.generate(userId)
-        val apiKeySaveResult = apiKeyRepository.insert(userId, apiKey)
+        val apiKeySaveResult = apiKeyRepository.insert(apiKey)
         if (apiKeySaveResult.isFailure)
             return Result.failure(Throwable("couldn't link the token"))
 
