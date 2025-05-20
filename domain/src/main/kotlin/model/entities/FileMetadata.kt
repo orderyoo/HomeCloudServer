@@ -1,8 +1,8 @@
 package model.entities
 
-data class File(
+data class FileMetadata(
     val id: Long,
-    val path: String,
+    val relativePath: String,
     val ownerId: Long,
     val spaceId: Long,
     val name: String,
