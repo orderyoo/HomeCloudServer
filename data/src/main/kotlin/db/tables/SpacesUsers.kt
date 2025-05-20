@@ -1,6 +1,6 @@
 package db.tables
 
-import model.entities.SpaceUserRole
+import model.types.SpaceUserRole
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
