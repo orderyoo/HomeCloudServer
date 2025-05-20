@@ -1,31 +1,29 @@
 package usecases.user
 
-import PasswordHasher
-import TokenGenerator
-import model.entities.Token
-import repositories.TokenRepository
+import model.entities.ApiKey
+import utils.HashService
+import repositories.ApiKeyRepository
 import repositories.UserRepository
 
 class UserLoginUseCase(
     private val userRepository: UserRepository,
-    private val tokenRepository: TokenRepository,
-    private val tokenGenerator: TokenGenerator,
-    private val passwordHasher: PasswordHasher
+    private val apiKeyRepository: ApiKeyRepository,
+    private val hashService: HashService
 ){
-    suspend operator fun invoke(enteredPassword: String, enteredEmail: String): Result<Token> {
-        val findingUser = userRepository.findByEmail(enteredEmail)
-        if(findingUser.isFailure)
-            return Result.failure(Throwable("user was not found"))
+    suspend operator fun invoke(enteredPassword: String, enteredEmail: String): Result<ApiKey> {
+        val userFindResult = userRepository.findByEmail(enteredEmail)
+        val user = userFindResult.getOrNull() ?:
+            return Result.failure(Throwable("failed to find a user"))
 
-        val verifyResult = passwordHasher.verify(enteredPassword, findingUser.getOrNull()!!.password )
+        val verifyResult = hashService.verify(enteredPassword, user.password)
         if (!verifyResult)
-            return Result.failure(Throwable("invalid password"))
+            return Result.failure(Exception("Incorrect password"))
 
-        val token = tokenGenerator.generate()
-        val tokenSaveResult = tokenRepository.insert(findingUser.getOrNull()!!.id, token)
-        if (tokenSaveResult.isFailure)
+        val apiKey = apiKeyRepository.generate(user.id)
+        val apiKeySaveResult = apiKeyRepository.insert(apiKey)
+        if (apiKeySaveResult.isFailure)
             return Result.failure(Throwable("couldn't link the token"))
 
-        return tokenSaveResult
+        return Result.success(apiKey)
     }
 }

@@ -2,11 +2,12 @@ package model.entities
 
 data class File(
     val id: Long,
-    val route: String,
-    val ownerId: Int,
-    val filename: String,
+    val path: String,
+    val ownerId: Long,
+    val spaceId: Long,
+    val name: String,
     val mimeType: String,
-    val fileSize: Long,
+    val size: Long,
     val createAt: String,
     val updateAt: String
 )
