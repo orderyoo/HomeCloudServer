@@ -3,10 +3,9 @@ package repositories
 import db.tables.ApiKeys
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toLocalDateTime
-import mappers.toDomainApiKey
+import db.mappers.toDomainApiKey
 import model.entities.ApiKey
 import model.types.ApiKeyType
-import model.types.SpaceUserRole
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert

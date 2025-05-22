@@ -1,4 +1,4 @@
-package mappers
+package db.mappers
 
 import db.tables.FilesMetadata
 import model.entities.FileMetadata

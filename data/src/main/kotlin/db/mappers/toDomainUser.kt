@@ -1,4 +1,4 @@
-package mappers
+package db.mappers
 
 import db.tables.Users
 import model.entities.User
