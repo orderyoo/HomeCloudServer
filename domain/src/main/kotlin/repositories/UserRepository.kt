@@ -14,8 +14,4 @@ interface UserRepository {
     suspend fun findByEmail(email: String): Result<User>
 
     suspend fun findBySpaceId(spaceId: Long): Result<List<User>>
-
-    suspend fun checkRoleInSystem(id: Long): Result<Unit>
-
-    suspend fun setRoleInSystem(): Result<Unit>
 }
