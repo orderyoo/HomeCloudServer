@@ -4,7 +4,7 @@ import db.tables.SpacesUsers
 import db.tables.Users
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toLocalDateTime
-import mappers.toDomainUser
+import db.mappers.toDomainUser
 import model.entities.User
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
