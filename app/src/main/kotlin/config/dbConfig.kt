@@ -1,5 +1,6 @@
 package com.homecloud.app.config
 
+import db.DatabaseConfig
 import io.ktor.server.config.HoconApplicationConfig
 
 fun HoconApplicationConfig.dbConfig(): DatabaseConfig {
@@ -9,8 +10,3 @@ fun HoconApplicationConfig.dbConfig(): DatabaseConfig {
         driver = dbSection.property("driver").getString()
     )
 }
-
-data class DatabaseConfig(
-    val url: String,
-    val driver: String
-)
