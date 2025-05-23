@@ -1,38 +1,31 @@
 package com.homecloud.app
 
-import com.homecloud.app.config.AppConfig
+import com.homecloud.app.config.mdnsConfig
+import com.homecloud.app.config.serverConfig
 import com.homecloud.app.service.MDNSServiceRegistrar
 import com.typesafe.config.ConfigFactory
-import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationStarted
-import io.ktor.server.application.ApplicationStopped
-import io.ktor.server.config.HoconApplicationConfig
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.server.routing.routing
+import io.ktor.server.application.*
+import io.ktor.server.config.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
 fun main() {
     val config = HoconApplicationConfig(ConfigFactory.load())
-    val appConfig = AppConfig(config)
+    val serverConfig = config.serverConfig()
+    val mdnsConfig = config.mdnsConfig()
     val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     embeddedServer(
         factory = Netty,
-        port = appConfig.server.port,
-        host = appConfig.server.host,
+        port = serverConfig.port,
+        host = serverConfig.host,
         module = Application::mainModule
     ).apply {
-        val serviceRegistrar = MDNSServiceRegistrar(appConfig, coroutineScope)
+        val serviceRegistrar = MDNSServiceRegistrar(serverConfig, mdnsConfig, coroutineScope)
         application.monitor.subscribe(ApplicationStarted) { serviceRegistrar.registerService() }
         application.monitor.subscribe(ApplicationStopped) { serviceRegistrar.close() }
     }.start(wait = true)
-}
-
-fun Application.mainModule() {
-    routing {
-
-    }
 }
