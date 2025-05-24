@@ -1,31 +1,33 @@
 package com.homecloud.app
 
-import com.homecloud.app.config.mdnsConfig
-import com.homecloud.app.config.serverConfig
+import com.homecloud.app.config.ServerConfig
+import com.homecloud.app.di.dataModule
+import com.homecloud.app.di.domainModule
+import com.homecloud.app.di.presentationModule
 import com.homecloud.app.service.MDNSServiceRegistrar
-import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.*
-import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.logger.slf4jLogger
 
 fun main() {
-    val config = HoconApplicationConfig(ConfigFactory.load())
-    val serverConfig = config.serverConfig()
-    val mdnsConfig = config.mdnsConfig()
-    val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    val koinApp = startKoin {
+        modules(domainModule, dataModule, presentationModule)
+        slf4jLogger()
+    }.koin
 
     embeddedServer(
         factory = Netty,
-        port = serverConfig.port,
-        host = serverConfig.host,
-        module = Application::mainModule
+        port = koinApp.get<ServerConfig>().port,
+        host = koinApp.get<ServerConfig>().host,
+        module = { mainModule(koinApp) }
     ).apply {
-        val serviceRegistrar = MDNSServiceRegistrar(serverConfig, mdnsConfig, coroutineScope)
-        application.monitor.subscribe(ApplicationStarted) { serviceRegistrar.registerService() }
-        application.monitor.subscribe(ApplicationStopped) { serviceRegistrar.close() }
+        application.monitor.subscribe(ApplicationStarted) {
+            koinApp.get<MDNSServiceRegistrar>().registerService()
+        }
+        application.monitor.subscribe(ApplicationStopped) {
+            koinApp.get<MDNSServiceRegistrar>().close()
+        }
     }.start(wait = true)
 }
