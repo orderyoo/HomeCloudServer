@@ -2,6 +2,10 @@ package com.homecloud.app.di
 
 import org.koin.dsl.module
 import usecases.ApiKeyVerification
+import usecases.file.FileDeleteUseCase
+import usecases.file.FileEditUseCase
+import usecases.file.FileGetUseCase
+import usecases.file.FileSaveUseCase
 import usecases.space.SpaceCreateUseCase
 import usecases.space.SpaceDeleteUseCase
 import usecases.space.SpaceEditUseCase
@@ -28,5 +32,10 @@ val domainModule = module {
     single<SpaceEditUseCase> { SpaceEditUseCase(get()) }
     single<SpaceDeleteUseCase> { SpaceDeleteUseCase(get()) }
     single<SpacesGetUseCase> { SpacesGetUseCase(get()) }
+
+    single<FileSaveUseCase> { FileSaveUseCase(get(), get()) }
+    single<FileEditUseCase> { FileEditUseCase(get(), get()) }
+    single<FileDeleteUseCase> { FileDeleteUseCase(get(), get()) }
+    single<FileGetUseCase> { FileGetUseCase(get(), get()) }
 
 }

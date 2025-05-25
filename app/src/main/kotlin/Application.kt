@@ -1,10 +1,9 @@
 package com.homecloud.app
 
-import io.ktor.server.application.Application
-import io.ktor.server.routing.routing
-import org.koin.core.Koin
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
 
-fun Application.mainModule(koin: Koin) {
+fun Application.mainModule() {
     routing {
 
     }

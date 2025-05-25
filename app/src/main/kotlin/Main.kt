@@ -9,6 +9,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
 fun main() {
@@ -21,13 +22,17 @@ fun main() {
         factory = Netty,
         port = koinApp.get<ServerConfig>().port,
         host = koinApp.get<ServerConfig>().host,
-        module = { mainModule(koinApp) }
+        module = {
+            install(Koin)
+            mainModule()
+        }
     ).apply {
         application.monitor.subscribe(ApplicationStarted) {
             koinApp.get<MDNSServiceRegistrar>().registerService()
         }
         application.monitor.subscribe(ApplicationStopped) {
             koinApp.get<MDNSServiceRegistrar>().close()
+            koinApp.close()
         }
     }.start(wait = true)
 }
